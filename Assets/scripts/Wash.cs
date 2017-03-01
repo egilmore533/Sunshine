@@ -10,6 +10,9 @@ public class Wash : MonoBehaviour {
     public float sprayAcceleration = 10f;
     public float sprayDeacceleration = 10f;
 
+    public SpriteAnimator sprite_animator;
+    bool full_spray = false;
+
     // Use this for initialization
     void Start () {
         SetGazedAt(false);
@@ -17,17 +20,8 @@ public class Wash : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        Debug.Log(m_gazed);
-        if (m_gazed)
-        {
-            spray.GetComponent<EllipsoidParticleEmitter>().maxEmission = Math.Min(100, spray.GetComponent<EllipsoidParticleEmitter>().maxEmission + sprayAcceleration);
-            Debug.Log(spray.GetComponent<EllipsoidParticleEmitter>().maxEmission);
-
-        }
-        else
-        {
-            spray.GetComponent<EllipsoidParticleEmitter>().maxEmission = Math.Max(0, spray.GetComponent<EllipsoidParticleEmitter>().maxEmission - sprayDeacceleration);
-        }
+        update_sprite();
+        update_particle_emitter();
     }
 
     public void SetGazedAt(bool gazedAt)
@@ -46,8 +40,36 @@ public class Wash : MonoBehaviour {
         SetGazedAt(false);
     }
 
-    public void OnGazeTrigger()
+    void update_particle_emitter()
     {
-       // TeleportThePlayer();
+        if (m_gazed)
+        {
+            if(!full_spray)
+            {
+                spray.GetComponent<EllipsoidParticleEmitter>().maxEmission = spray.GetComponent<EllipsoidParticleEmitter>().maxEmission + sprayAcceleration;
+                if (spray.GetComponent<EllipsoidParticleEmitter>().maxEmission >= 100)
+                {
+                    full_spray = true;
+                    spray.GetComponent<EllipsoidParticleEmitter>().maxEmission = 100;
+                }
+            }
+        }
+        else
+        {
+            if(full_spray)
+            {
+                full_spray = false;
+            }
+            spray.GetComponent<EllipsoidParticleEmitter>().maxEmission = Math.Max(0, spray.GetComponent<EllipsoidParticleEmitter>().maxEmission - sprayDeacceleration);
+        }
+    }
+
+    void update_sprite()
+    {
+        //if not finished, animate
+        if (sprite_animator.is_finished())
+            m_gazed = false;
+        else if(full_spray)
+            sprite_animator.next_frame();
     }
 }

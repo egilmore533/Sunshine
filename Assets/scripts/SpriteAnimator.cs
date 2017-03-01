@@ -12,18 +12,24 @@ public class SpriteAnimator : MonoBehaviour
     private Renderer _myRenderer;
     private int _lastIndex = -1;
 
+    bool finished = false;
+    int index;
+
     void Start()
     {
+        index = 0;
         _size = new Vector2(1.0f / _uvTieX, 1.0f / _uvTieY);
         _myRenderer = GetComponent<Renderer>();
         if (_myRenderer == null)
             enabled = false;
+
+        next_frame();
     }
+
     // Update is called once per frame
-    void Update()
+    public void next_frame()
     {
-        // Calculate index
-        int index = (int)(Time.timeSinceLevelLoad * _fps) % (_uvTieX * _uvTieY);
+        Debug.Log(index);
         if (index != _lastIndex)
         {
             // split into horizontal and vertical index
@@ -39,5 +45,21 @@ public class SpriteAnimator : MonoBehaviour
 
             _lastIndex = index;
         }
+        index++;
+        if(check_last_frame())
+        {
+            index = 0;
+            finished = true;
+        }
+    }
+
+    bool check_last_frame()
+    {
+        return (index > (_uvTieX * _uvTieY) - 1);
+    }
+
+    public bool is_finished()
+    {
+        return finished;
     }
 }
