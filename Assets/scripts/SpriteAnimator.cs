@@ -22,14 +22,13 @@ public class SpriteAnimator : MonoBehaviour
         _myRenderer = GetComponent<Renderer>();
         if (_myRenderer == null)
             enabled = false;
-
+        Debug.Log(_uvTieX * _uvTieY);
         next_frame();
     }
 
     // Update is called once per frame
     public void next_frame()
     {
-        Debug.Log(index);
         if (index != _lastIndex)
         {
             // split into horizontal and vertical index
