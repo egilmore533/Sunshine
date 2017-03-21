@@ -77,7 +77,7 @@ public class ScoreManager : MonoBehaviour {
     void UpdateWashCircle()
     {
         spinning_circle.gameObject.SetActive(washing);
-        spinning_circle.transform.Rotate(new Vector3(0,1,0), game_time);
+        spinning_circle.transform.Rotate(new Vector3(0,1,0), 3);
     }
 
     void update_game_time()
