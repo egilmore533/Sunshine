@@ -20,6 +20,8 @@ public class Wash : MonoBehaviour {
         SetGazedAt(false);
         gazeable = true;
         just_gazed = false;
+
+        ScoreManager.graffiti_count++;
     }
 	
 	// Update is called once per frame
@@ -36,14 +38,19 @@ public class Wash : MonoBehaviour {
     //These functions are the ones that are called in the editor
     public void OnGazeEnter()
     {
-        if(gazeable)
+        if (gazeable)
+        {
             this.SetGazedAt(true);
+            ScoreManager.washing = m_gazed;
+        }
     }
 
     public void OnGazeExit()
     {
         if(gazeable)
             this.SetGazedAt(false);
+
+        ScoreManager.washing = m_gazed;
     }
 
     void update_particle_emitter()
@@ -81,6 +88,7 @@ public class Wash : MonoBehaviour {
             m_gazed = false;
             ScoreManager.add_score(10);
             gazeable = false;
+            ScoreManager.graffiti_count--;
         }
             
         else if(full_spray)
