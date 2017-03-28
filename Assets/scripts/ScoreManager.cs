@@ -81,17 +81,17 @@ public class ScoreManager : MonoBehaviour {
     void UpdateWashCircle()
     {
         spinning_circle.gameObject.SetActive(true);
-        spinning_circle.transform.Rotate(new Vector3(0,1,0), 3);
+        spinning_circle.transform.Rotate(new Vector3(0,1,0), 4);
 
         if(washing)
         {
             //increase alpha
-            circle_current_alpha += Math.Min(circle_transition_rate, 1.0f);
+            circle_current_alpha = Math.Min(circle_current_alpha + circle_transition_rate, 1.0f);
         }
         else
         {
             //decrease
-            circle_current_alpha -= Math.Max(circle_transition_rate, 0.0f);
+            circle_current_alpha = Math.Max(circle_current_alpha + circle_transition_rate, 0.0f);
         }
         spinning_circle.gameObject.GetComponent<Renderer>().material.color =
               new Color(1.0f, 1.0f, 1.0f, circle_current_alpha);
