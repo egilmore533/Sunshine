@@ -6,6 +6,12 @@ public class Teleporter : MonoBehaviour {
 
     GameObject player;
     GameObject[] teleporters;
+
+    float wait_time = 1.0f;
+    float teleport_time;
+    bool gazed = false;
+
+
 	// Use this for initialization
 	void Start () {
         teleporters = GameObject.FindGameObjectsWithTag("Teleporter");
@@ -13,12 +19,19 @@ public class Teleporter : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
-	}
+        if (gazed && ScoreManager.get_game_time() >= teleport_time)
+        {
+            TeleportPlayer();
+            gazed = false;
+        }
+
+    }
 
     public void TeleportPlayer()
     {
         Debug.Log("Triggered!!!!");
+
+
         player = GameObject.FindGameObjectWithTag("Player");
         player.transform.position = new Vector3(this.gameObject.transform.position.x, 
                                                 GameObject.FindGameObjectWithTag("Player").transform.position.y, 
@@ -33,5 +46,16 @@ public class Teleporter : MonoBehaviour {
                 tp.gameObject.SetActive(true);
             }
         }
+    }
+
+    public void PlayerGazeEnter()
+    {
+        teleport_time = ScoreManager.get_game_time() + wait_time;
+        gazed = true;
+    }
+
+    public void PlayerGazeExit()
+    {
+        gazed = false;
     }
 }
