@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using UnityEngine.SceneManagement;
 
 public class ScoreManager : MonoBehaviour {
 
     public static TextMesh score_text;
     public static TextMesh timer;
     public static TextMesh graffiti;
-
 
     //spinning circle while washing
     public GameObject spinning_circle;
@@ -86,7 +86,18 @@ public class ScoreManager : MonoBehaviour {
 
         UpdateWashCircle();
         update_particle_emitter();
+
+        check_stage_finished_and_switch();
     }
+
+    void check_stage_finished_and_switch()
+    {
+        if (graffiti_count <= 0)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        }
+    }
+
 
     void UpdateWashCircle()
     {
