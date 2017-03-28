@@ -54,7 +54,6 @@ public class SpriteAnimator : MonoBehaviour
 
     bool check_last_frame()
     {
-        Debug.Log(index);
         return (index > (_uvTieX * _uvTieY) - 1);
     }
 

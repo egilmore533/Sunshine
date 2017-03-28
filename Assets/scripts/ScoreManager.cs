@@ -15,7 +15,7 @@ public class ScoreManager : MonoBehaviour {
     public GameObject spinning_circle;
     Quaternion circle_rotation;
     public static bool washing;
-    public float circle_transition_rate = 0.8f;
+    float circle_transition_rate = 0.06f;
     public float circle_current_alpha;
 
     static float score;
@@ -56,7 +56,7 @@ public class ScoreManager : MonoBehaviour {
         }
 
         spinning_circle = GameObject.FindGameObjectWithTag("circle");
-        circle_current_alpha = spinning_circle.gameObject.GetComponent<Renderer>().material.color.a;
+        circle_current_alpha = 0;
         circle_rotation = spinning_circle.transform.rotation;
 
         score = 0;
@@ -86,15 +86,20 @@ public class ScoreManager : MonoBehaviour {
         if(washing)
         {
             //increase alpha
-            circle_current_alpha = Math.Min(circle_current_alpha + circle_transition_rate, 1.0f);
+            circle_current_alpha += circle_transition_rate;
+            if(circle_current_alpha > 1.0f)
+                circle_current_alpha = 1.0f;
         }
         else
         {
             //decrease
-            circle_current_alpha = Math.Max(circle_current_alpha + circle_transition_rate, 0.0f);
+            circle_current_alpha -= circle_transition_rate;
+            if (circle_current_alpha < 0.0f)
+                circle_current_alpha = 0.0f;
         }
         spinning_circle.gameObject.GetComponent<Renderer>().material.color =
               new Color(1.0f, 1.0f, 1.0f, circle_current_alpha);
+        Debug.Log(circle_current_alpha);
     }
 
     void update_game_time()

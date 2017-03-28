@@ -29,9 +29,6 @@ public class Teleporter : MonoBehaviour {
 
     public void TeleportPlayer()
     {
-        Debug.Log("Triggered!!!!");
-
-
         player = GameObject.FindGameObjectWithTag("Player");
         player.transform.position = new Vector3(this.gameObject.transform.position.x, 
                                                 GameObject.FindGameObjectWithTag("Player").transform.position.y, 
