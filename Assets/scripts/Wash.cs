@@ -5,29 +5,20 @@ using System;
 
 public class Wash : MonoBehaviour {
 
-    public bool m_gazed;
-    private bool gazeable;
-    private bool just_gazed;
-    public GameObject spray;
-    public float sprayAcceleration = 1f;
-    public float sprayDeacceleration = 10f;
-
     public SpriteAnimator sprite_animator;
-    bool full_spray = false;
+    public bool m_gazed;
+
 
     // Use this for initialization
     void Start () {
         SetGazedAt(false);
-        gazeable = true;
-        just_gazed = false;
-
+        
         ScoreManager.graffiti_count++;
     }
 	
 	// Update is called once per frame
 	void Update () {
         update_sprite();
-        update_particle_emitter();
     }
 
     public void SetGazedAt(bool gazedAt)
@@ -38,60 +29,29 @@ public class Wash : MonoBehaviour {
     //These functions are the ones that are called in the editor
     public void OnGazeEnter()
     {
-        if (gazeable)
-        {
-            this.SetGazedAt(true);
-            ScoreManager.washing = m_gazed;
-        }
+        this.SetGazedAt(true);
+        ScoreManager.washing = m_gazed;
     }
 
     public void OnGazeExit()
     {
-        if(gazeable)
-            this.SetGazedAt(false);
+        this.SetGazedAt(false);
 
         ScoreManager.washing = m_gazed;
-    }
-
-    void update_particle_emitter()
-    {
-        if (m_gazed)
-        {
-            just_gazed = true;
-            if (!full_spray)
-            {
-                spray.GetComponent<EllipsoidParticleEmitter>().maxEmission = spray.GetComponent<EllipsoidParticleEmitter>().maxEmission + sprayAcceleration;
-                if (spray.GetComponent<EllipsoidParticleEmitter>().maxEmission >= 100)
-                {
-                    full_spray = true;
-                    spray.GetComponent<EllipsoidParticleEmitter>().maxEmission = 100;
-                }
-            }
-        }
-        else if(just_gazed)
-        {
-            if(full_spray)
-            {
-                full_spray = false;
-            }
-            spray.GetComponent<EllipsoidParticleEmitter>().maxEmission = Math.Max(0, spray.GetComponent<EllipsoidParticleEmitter>().maxEmission - sprayDeacceleration);
-            if (spray.GetComponent<EllipsoidParticleEmitter>().maxEmission == 0)
-                just_gazed = false;
-        }
     }
 
     void update_sprite()
     {
         //if not finished, animate
-        if (sprite_animator.is_finished() && gazeable)
+        if (sprite_animator.is_finished())
         {
-            m_gazed = false;
             ScoreManager.add_score(10);
-            gazeable = false;
             ScoreManager.graffiti_count--;
+            gameObject.SetActive(false);
+            ScoreManager.washing = false;
         }
             
-        else if(full_spray)
+        else if(ScoreManager.full_spray && m_gazed)
             sprite_animator.next_frame();
     }
 }

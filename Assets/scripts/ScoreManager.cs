@@ -18,6 +18,14 @@ public class ScoreManager : MonoBehaviour {
     float circle_transition_rate = 0.06f;
     public float circle_current_alpha;
 
+    //spray animation
+    public GameObject spray;
+    public float sprayAcceleration = 1f;
+    public float sprayDeacceleration = 10f;
+    public static bool full_spray = false;
+    private bool just_gazed;
+    //end spray animtaion
+
     static float score;
     static float game_time;
     public static int graffiti_count;
@@ -62,6 +70,7 @@ public class ScoreManager : MonoBehaviour {
         score = 0;
         update_score();
         washing = false;
+        just_gazed = false;
 
     }
 
@@ -76,6 +85,7 @@ public class ScoreManager : MonoBehaviour {
         graffiti.text = "Graffiti: " + graffiti_count;
 
         UpdateWashCircle();
+        update_particle_emitter();
     }
 
     void UpdateWashCircle()
@@ -131,5 +141,32 @@ public class ScoreManager : MonoBehaviour {
     {
         score += (1 / (game_time / 1000f)) * points_to_add;
         update_score();
+    }
+
+    void update_particle_emitter()
+    {
+        if (washing)
+        {
+            just_gazed = true;
+            if (!full_spray)
+            {
+                spray.GetComponent<EllipsoidParticleEmitter>().maxEmission = spray.GetComponent<EllipsoidParticleEmitter>().maxEmission + sprayAcceleration;
+                if (spray.GetComponent<EllipsoidParticleEmitter>().maxEmission >= 100)
+                {
+                    full_spray = true;
+                    spray.GetComponent<EllipsoidParticleEmitter>().maxEmission = 100;
+                }
+            }
+        }
+        else if (just_gazed)
+        {
+            if (full_spray)
+            {
+                full_spray = false;
+            }
+            spray.GetComponent<EllipsoidParticleEmitter>().maxEmission = Math.Max(0, spray.GetComponent<EllipsoidParticleEmitter>().maxEmission - sprayDeacceleration);
+            if (spray.GetComponent<EllipsoidParticleEmitter>().maxEmission == 0)
+                just_gazed = false;
+        }
     }
 }
